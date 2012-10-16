@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html> 
+<head> 
+<title>nowjs test</title> 
+<script type="text/javascript" src="jquery.min.js"></script> 
+<script src="http://node.at.yoka.com:8888/nowjs/now.js"></script>
+<style>
+	#hello,#test {border: 1px solid;margin: 10px}
+</style>
+<script>
+var username = '';
+$(document).ready(function(){
+	//连接服务器通知
+	now.hello = function(str){
+		$('#hello').html(str);
+		
+		if(username == ''){
+			//获取用户名
+		  now.name = prompt("What's your name?", "");
+		  $('#test').html('This user is ' + now.name);
+		  now.userInit();
+		  username = now.name;
+		}
+	} 
+
+	//注册消息处理函数
+	now.receiveList = function(str){
+		$('#towho').html(str);
+	}
+  now.receiveMessage = function(fromwho,message){
+  	appendMessage(fromwho,message);
+  }
+
+	
+  $("#send-button").click(function(){
+    distribute();
+  });
+
+});
+function appendMessage(name,message){
+		$("#messages").append("<div class='message'>" + name + " : " + message + "</div>");
+}
+
+function distribute(){
+	$("#messages").append("<div class='message'> I to " + $("#towho").val() + " : " + $("#text-input").val() + "</div>");
+	now.distributeMessage($("#towho").val(),$("#text-input").val());
+	$("#text-input").val("");
+	if ($("#messages div").length > 10){
+		$("#messages > div:first").remove();
+	}
+}
+</script>
+</head> 
+ 
+<body>
+<div id="test"></div>
+<div id="hello"></div>
+<div id="messages"></div>
+<div>
+	对<select id="towho"><option value='all'>all</option></select>
+	<input type="text" id="text-input" autofocus>
+	<input type="button" value="Send" id="send-button">
+</div>
+
+</body> 
+</html> 
